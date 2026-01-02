@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winget Command Generator</title>
+    <meta name="description" content="Generate winget commands to install multiple Windows applications at once">
+    <meta name="keywords" content="winget, windows, package manager, installer, batch install">
+    <meta name="author" content="a2r14n">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fab fa-windows"></i>
+                <h1>Winget Command Generator</h1>
+            </div>
+            <div class="header-actions">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search apps...">
+                </div>
+                <div class="header-stats">
+                    <span class="stat">
+                        <span id="selectedCount">0</span> selected
+                    </span>
+                </div>
+                <div class="header-buttons">
+                    <button class="btn btn-secondary" id="selectAllBtn">Select All</button>
+                    <button class="btn btn-secondary" id="clearAllBtn">Clear</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Apps Section -->
+        <section class="apps-section" id="appsSection">
+            <div class="loading-state" id="loadingState">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading apps...</p>
+            </div>
+        </section>
+
+        <!-- Output Section -->
+        <aside class="output-section" id="outputSection">
+            <div class="output-header">
+                <div class="output-title">
+                    <i class="fas fa-terminal"></i>
+                    <span>Generated Command</span>
+                </div>
+                <button class="btn btn-primary" id="copyAllBtn" disabled>
+                    <i class="fas fa-copy"></i>
+                    Copy Command
+                </button>
+            </div>
+            
+            <!-- Options -->
+            <div class="output-options">
+                <label class="option-checkbox">
+                    <input type="checkbox" id="outputFormat">
+                    <span>Separate commands</span>
+                </label>
+                <label class="option-checkbox">
+                    <input type="checkbox" id="silentInstall">
+                    <span>Silent install</span>
+                </label>
+                <label class="option-checkbox">
+                    <input type="checkbox" id="acceptAgreements" checked>
+                    <span>Auto-accept</span>
+                </label>
+            </div>
+            
+            <!-- Command Output -->
+            <div class="output-content" id="outputContent">
+                <div class="empty-state">
+                    <i class="fas fa-hand-pointer"></i>
+                    <p>Select apps to generate command</p>
+                </div>
+            </div>
+            
+            <!-- How to Use -->
+            <div class="how-to-use">
+                <strong>How to use:</strong>
+                <span>Copy the command → Open Terminal as Admin → Paste & Run</span>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Copied to clipboard!</span>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/icons.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
