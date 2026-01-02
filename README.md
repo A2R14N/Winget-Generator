@@ -1,4 +1,4 @@
-# 🪟 Winget Command Generator (W.I.P.)
+# 🪟 Winget Command Generator
 
 <div align="center">
 
@@ -34,7 +34,7 @@
 ### 🎯 Core Features
 - ✅ **100+ Pre-configured Apps** - Popular software ready to install
 - ✅ **Ninite-Style Layout** - All categories visible, no dropdowns
-- ✅ **Colored App Icons** - Via Simple Icons & Favicon APIs
+- ✅ **App Icons** - Cached via Service Worker for fast loading
 - ✅ **Instant Search** - Filter apps by name or package ID
 - ✅ **Bulk Selection** - Select all or by category
 
@@ -70,7 +70,7 @@ winget install --id App2 --silent
 - 📱 **Fully Responsive** - Works on all devices
 - ⚡ **Lightweight** - No frameworks, pure HTML/CSS/JS
 - 🎯 **Syntax Highlighting** - Beautiful command output
-- 🚫 **No Text Selection** - App-like experience
+- 💾 **Icon Caching** - Service Worker for offline support
 
 </td>
 </tr>
@@ -112,10 +112,11 @@ xdg-open index.html   # Linux
 ```
 winget-generator/
 ├── index.html          # Main HTML file
+├── sw.js               # Service Worker for icon caching
 ├── css/
 │   └── styles.css      # All styles (VS Code theme, Ninite layout)
 ├── js/
-│   ├── icons.js        # Icon sources (Simple Icons, Favicon APIs)
+│   ├── icons.js        # Icon URLs and fallback handling
 │   ├── data.js         # App database (100+ apps)
 │   └── app.js          # Main application logic
 ├── screenshots/        # Screenshots for README
@@ -129,22 +130,24 @@ winget-generator/
 
 | Category | Apps | Examples |
 |----------|------|----------|
-| 🌐 **Web Browsers** | 6 | Chrome, Firefox, Edge, Brave, Opera, Vivaldi |
-| 💬 **Messaging** | 8 | Discord, Zoom, Teams, Slack, Telegram, Signal |
-| 🎵 **Media** | 11 | VLC, Spotify, Audacity, OBS Studio, HandBrake |
-| 🎨 **Imaging** | 10 | GIMP, Inkscape, Krita, Blender, ShareX |
-| 📄 **Documents** | 7 | LibreOffice, Obsidian, Notion, SumatraPDF |
-| 🛡️ **Security** | 6 | Malwarebytes, Bitwarden, KeePass, KeePassXC |
-| ☁️ **Online Storage** | 4 | Dropbox, Google Drive, OneDrive, Nextcloud |
-| 🔧 **Utilities** | 11 | 7-Zip, PowerToys, Everything, CCleaner |
-| 🖥️ **Remote Access** | 5 | TeamViewer, AnyDesk, RustDesk, Parsec |
-| 🎮 **Gaming** | 5 | Steam, Epic Games, GOG Galaxy, EA App |
-| 💻 **Developer Tools** | 17 | VS Code, Git, Node.js, Python, Docker |
-| 🔷 **.NET Runtimes** | 5 | .NET 8, .NET 7, .NET 6, ASP.NET Core |
-| ☕ **Java** | 7 | Temurin JDK/JRE 21, 17, 11, Amazon Corretto |
-| ⚙️ **VC++ Runtimes** | 8 | VC++ 2015-2022, 2013, 2012, 2010 (x64/x86) |
+| 🌐 **Web Browsers** | 8 | Chrome, Edge, Firefox, Brave, Opera, Opera GX, Vivaldi, Tor |
+| 💬 **Messaging** | 8 | WhatsApp, Discord, Telegram, Zoom, Teams, Slack, Signal, Thunderbird |
+| 🎵 **Media** | 10 | Spotify, VLC, iTunes, Plex, OBS Studio, Audacity, HandBrake |
+| 🎨 **Imaging** | 9 | Figma, Blender, GIMP, Paint.NET, ShareX, Inkscape, Krita, Affinity |
+| 📄 **Documents** | 5 | Notion, Obsidian, LibreOffice, Calibre, OpenOffice |
+| 🛡️ **Security** | 7 | Malwarebytes, Bitwarden, NordVPN, ProtonVPN, KeePassXC, KeePass |
+| ☁️ **Cloud Storage** | 5 | Google Drive, OneDrive, Dropbox, Nextcloud, pCloud |
+| 📤 **File Sharing** | 3 | qBittorrent, Deluge, Transmission |
+| 🗜️ **Compression** | 3 | WinRAR, 7-Zip, PeaZip |
+| 🔧 **Utilities** | 8 | PowerToys, CPU-Z, HWiNFO, WizTree, WinDirStat, Sysinternals |
+| 🖥️ **Remote Access** | 4 | TeamViewer, AnyDesk, Parsec, RustDesk |
+| 🎮 **Gaming** | 7 | Steam, Epic Games, EA App, Battle.net, Ubisoft Connect, GOG Galaxy, Playnite |
+| 💻 **Developer Tools** | 15 | VS Code, Git, Visual Studio, Docker, Node.js, Python, Notepad++ |
+| 🔷 **.NET Runtimes** | 5 | .NET 8, .NET 7, .NET 6, ASP.NET Core 8, .NET Framework 4.8 |
+| ☕ **Java Runtimes** | 5 | Temurin JDK/JRE 21, 17, 11 |
+| ⚙️ **VC++ Runtimes** | 13 | VC++ 2015-2022, 2013, 2012, 2010, 2008, 2005 (x64/x86/ARM64) |
 
-**Total: 100+ Applications**
+**Total: 115+ Applications**
 
 ---
 
@@ -169,20 +172,19 @@ Edit `js/data.js` to add new applications:
 ```javascript
 {
     name: "App Name",
-    id: "Publisher.AppName",  // Winget package ID
-    iconUrl: IconSources.simpleIcon('iconname')  // or .favicon('domain.com')
+    id: "Publisher.AppName"  // Winget package ID
 }
+```
+
+Then add the icon URL in `js/icons.js`:
+
+```javascript
+'Publisher.AppName': 'https://example.com/icon.png'
 ```
 
 ### Finding Winget Package IDs:
 ```powershell
 winget search "app name"
-```
-
-### Icon Sources:
-```javascript
-IconSources.simpleIcon('spotify')     // Brand logos (colored)
-IconSources.favicon('example.com')    // Website favicons
 ```
 
 ---
@@ -210,9 +212,14 @@ Edit `js/data.js`:
     icon: "fa-icon-name",       // Font Awesome icon
     colorClass: "cat-custom",   // CSS class for color
     apps: [
-        { name: "App", id: "Package.ID", iconUrl: IconSources.simpleIcon('icon') }
+        { name: "App", id: "Package.ID" }
     ]
 }
+```
+
+Add the icon in `js/icons.js`:
+```javascript
+'Package.ID': 'https://example.com/icon.png'
 ```
 
 Add color in `css/styles.css`:
@@ -260,10 +267,16 @@ This is the default output format of this tool.
 <details>
 <summary><strong>Why are some icons missing?</strong></summary>
 
-Icons are loaded from external APIs (Simple Icons, Google Favicon). If an icon fails:
-- The app may not have a Simple Icons entry
-- Fallback to favicon API is attempted
-- A 📦 emoji is shown as last resort
+Icons are loaded from various sources. If an icon fails to load:
+- A fallback package icon is displayed
+- Icons are cached via Service Worker after first load
+- Check `js/icons.js` to add missing icon URLs
+</details>
+
+<details>
+<summary><strong>Do icons work offline?</strong></summary>
+
+Yes! After the first visit, icons are cached by the Service Worker and will load instantly on subsequent visits, even offline.
 </details>
 
 ---
@@ -291,10 +304,13 @@ Contributions are welcome!
 
 - [x] Ninite-style flat layout
 - [x] Single command with multiple packages
-- [x] Colored app icons
+- [x] App icons with caching
 - [x] Search functionality
 - [x] Responsive design
 - [x] Syntax highlighting
+- [x] Service Worker for offline icon caching
+- [x] All VC++ Runtime versions (2005-2022)
+
 ---
 
 ## 📜 License
@@ -305,11 +321,10 @@ Distributed under the **MIT License**. See `LICENSE` for more information.
 
 ## 🙏 Acknowledgments
 
-- [Simple Icons](https://simpleicons.org/) - Brand icons
-- [Google Favicon API](https://www.google.com/s2/favicons) - Website favicons
 - [Font Awesome](https://fontawesome.com/) - UI icons
 - [Microsoft Winget](https://github.com/microsoft/winget-cli) - Windows Package Manager
 - [Ninite](https://ninite.com/) - UI inspiration
+- [Homarr Dashboard Icons](https://github.com/homarr-labs/dashboard-icons) - App icons
 
 ---
 
